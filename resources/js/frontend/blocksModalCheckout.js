@@ -85,7 +85,7 @@ const blocksProcessOrder = function (paymentGateway) {
 		//console.log('Received response when processing order: ');
 		//console.log(response);
 
-		if (response.data.invoiceId) {
+		if (response.data.invoiceId || (response.data.subscription && response.data.redirect)) {
 			responseData = response.data;
 		} else {
 			///unblockElement('.woocommerce-checkout-payment');
@@ -117,6 +117,9 @@ const blocksShowBTCPayModal = function (data) {
 	if (data.invoiceId !== undefined) {
 		window.btcpay.setApiUrlPrefix(BTCPayWP.apiUrl);
 		window.btcpay.showInvoice(data.invoiceId);
+	} else if (data.subscription && data.redirect) {
+		window.location = data.redirect;
+		return;
 	}
 	let invoice_paid = false;
 	window.btcpay.onModalReceiveMessage(function (event) {
